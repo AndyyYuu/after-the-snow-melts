@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111827" />
+    <title>等雪融化以后 · 可玩剧情原型</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="game-frame" aria-label="等雪融化以后游戏画面">
+        <canvas id="game" width="1280" height="720" tabindex="0"></canvas>
+        <div class="screen-shade" aria-hidden="true"></div>
+        <div id="transition" class="transition" aria-hidden="true"></div>
+
+        <header id="hud" class="hud is-hidden">
+          <div class="hud-chapter">
+            <span class="eyebrow">CHAPTER</span>
+            <strong id="chapter-name">现实 · 白栎车站</strong>
+          </div>
+          <div class="hud-objective">
+            <span class="eyebrow">当前目标</span>
+            <span id="objective">找到诺娅</span>
+          </div>
+          <button id="journal-button" class="hud-button" type="button" aria-label="打开记忆日志">
+            <span>记忆碎片</span>
+            <strong><span id="fragment-count">0</span>/7</strong>
+          </button>
+        </header>
+
+        <div id="interaction-prompt" class="interaction-prompt is-hidden">
+          <kbd>E</kbd><span id="interaction-label">调查</span>
+        </div>
+
+        <section id="dialogue" class="dialogue is-hidden" aria-live="polite">
+          <div id="speaker" class="speaker">弥洛</div>
+          <p id="dialogue-text"></p>
+          <div class="dialogue-footer">
+            <span id="dialogue-note">E / ENTER 继续</span>
+            <span class="continue-mark" aria-hidden="true"></span>
+          </div>
+        </section>
+
+        <section id="title-screen" class="title-screen">
+          <div class="title-kicker">原创像素叙事游戏</div>
+          <h1>等雪融化以后</h1>
+          <p class="title-quote">对她而言，三十年只是短暂的旅行；<br />对他而言，那却是一生都没有等到的春天。</p>
+          <button id="start-button" class="primary-button" type="button">开始回忆</button>
+          <div class="title-controls">
+            <span><kbd>WASD</kbd> / <kbd>方向键</kbd> 移动</span>
+            <span><kbd>E</kbd> / <kbd>ENTER</kbd> 调查与对话</span>
+            <span><kbd>J</kbd> 记忆日志</span>
+          </div>
+        </section>
+
+        <section id="journal" class="journal is-hidden" aria-modal="true" role="dialog" aria-label="记忆日志">
+          <div class="journal-card">
+            <header>
+              <div>
+                <span class="eyebrow">MEMORY LOG</span>
+                <h2>那些“没有必要”的事</h2>
+              </div>
+              <button id="journal-close" type="button" aria-label="关闭记忆日志">×</button>
+            </header>
+            <ol id="fragment-list" class="fragment-list"></ol>
+            <p class="journal-hint">莱恩从未要求她偿还什么。他只是替迟到的悲伤留了一条回来的路。</p>
+          </div>
+        </section>
+
+        <section id="ending" class="ending is-hidden">
+          <p class="ending-line">有些人不是没有学会爱。</p>
+          <p class="ending-line delay-one">只是爱抵达他们心里，需要走很远的路。</p>
+          <div class="ending-title delay-two">等雪融化以后</div>
+          <button id="restart-button" class="secondary-button delay-two" type="button">重新走一遍</button>
+        </section>
+
+        <div class="mobile-controls" aria-label="触控操作">
+          <button data-key="ArrowUp" aria-label="向上">▲</button>
+          <button data-key="ArrowLeft" aria-label="向左">◀</button>
+          <button data-key="ArrowDown" aria-label="向下">▼</button>
+          <button data-key="ArrowRight" aria-label="向右">▶</button>
+          <button data-action="interact" class="mobile-interact" aria-label="调查">E</button>
+        </div>
+      </section>
+
+      <aside class="outside-note">
+        <span>32px GRID MEMORY</span>
+        <p>沿发光标记靠近记忆，按 E 调查。场景中的人物是被冻结的往昔；你操纵的是走进记忆的弥洛。</p>
+      </aside>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>
