@@ -29,14 +29,21 @@
   const GRID = 32;
   const images = {};
   const imageSources = {
-    station: "assets/station.png",
-    rain: "assets/rain-town.png",
-    flowers: "assets/blue-valley.png",
-    festival: "assets/festival.png",
-    campfire: "assets/campfire.png",
-    workshop: "assets/watchshop.png",
-    deathbed: "assets/last-meeting.png",
-    final: "assets/final-platform.png",
+    station: "assets/map-v2-station.png",
+    rain: "assets/map-v2-rain-town.png",
+    flowers: "assets/map-v2-blue-valley.png",
+    festival: "assets/map-v2-festival.png",
+    campfire: "assets/map-v2-campfire.png",
+    workshop: "assets/map-v2-workshop.png",
+    deathbed: "assets/map-v2-deathbed.png",
+    sprites: "assets/sprites-v2-characters.png",
+  };
+
+  const spriteRows = {
+    miro: 0,
+    youngRyan: 1,
+    oldRyan: 2,
+    noa: 3,
   };
 
   const fragments = [
@@ -86,6 +93,7 @@
     fullLine: "",
     dialogueDone: null,
     toast: null,
+    bump: null,
     lastTime: 0,
   };
 
@@ -113,14 +121,19 @@
       image: "station",
       chapter: "序章 · 白栎车站",
       objective: "去候车室门口找诺娅",
-      start: [18, 16],
-      bounds: [4, 32, 5, 19],
+      start: [13, 12],
+      bounds: [2, 36, 3, 21],
+      playerSprite: "miro",
+      walkable: [[3, 10, 28, 13], [22, 13, 28, 21], [29, 12, 35, 21], [20, 4, 28, 13], [3, 4, 18, 10], [10, 9, 13, 12]],
+      blocked: [[4, 10, 9, 11], [15, 10, 18, 11], [21, 5, 23, 8], [25, 10, 27, 11]],
+      npcs: [
+        { id: "noa", sprite: "noa", cell: [10, 12], direction: "down" },
+      ],
       snow: true,
-      avatar: "miro",
       hotspots: [
         {
           id: "noa",
-          cell: [7, 9],
+          cell: [10, 12],
           label: "与诺娅交谈",
           lines: [
             line("诺娅", "你比祖父预计的……晚了三十年。"),
@@ -138,7 +151,7 @@
         },
         {
           id: "umbrella",
-          cell: [22, 9],
+          cell: [16, 14],
           label: "查看旧雨伞",
           optional: true,
           lines: [
@@ -148,7 +161,7 @@
         },
         {
           id: "clock",
-          cell: [15, 8],
+          cell: [22, 6],
           label: "触碰停摆的大钟",
           condition: () => state.flags.has("metNoa"),
           lockedLines: [line("弥洛", "怀表在发热。诺娅或许知道原因。")],
@@ -167,14 +180,20 @@
       image: "rain",
       chapter: "第一章 · 偏向她的伞",
       objective: "靠近共撑雨伞的两个人",
-      start: [7, 17],
-      bounds: [3, 35, 7, 19],
+      start: [29, 20],
+      bounds: [0, 39, 1, 21],
+      playerSprite: "miro",
+      walkable: [[0, 8, 39, 12], [28, 10, 31, 21], [1, 3, 14, 8], [9, 7, 12, 12], [22, 1, 25, 12], [37, 1, 39, 12]],
+      blocked: [[3, 8, 7, 9], [26, 9, 27, 11], [33, 8, 36, 10]],
+      npcs: [
+        { id: "past-miro", sprite: "miro", cell: [20, 10], direction: "right", memory: true },
+        { id: "young-ryan", sprite: "youngRyan", cell: [22, 10], direction: "left", memory: true },
+      ],
       rain: true,
-      avatar: "miro",
       hotspots: [
         {
           id: "coat",
-          cell: [29, 8],
+          cell: [4, 5],
           label: "查看壁炉旁的外套",
           optional: true,
           lines: [
@@ -184,7 +203,7 @@
         },
         {
           id: "umbrella-memory",
-          cell: [19, 13],
+          cell: [21, 10],
           label: "进入雨中的记忆",
           lines: [
             line("过去的弥洛", "伞坏了吗？它明显偏向左边。"),
@@ -203,13 +222,19 @@
       image: "flowers",
       chapter: "第二章 · 没有必要的绕路",
       objective: "调查山谷中的蓝色花朵",
-      start: [31, 17],
-      bounds: [3, 35, 5, 19],
-      avatar: "miro",
+      start: [20, 21],
+      bounds: [1, 38, 2, 21],
+      playerSprite: "miro",
+      walkable: [[18, 18, 22, 21], [14, 14, 35, 18], [32, 8, 36, 18], [10, 4, 35, 8], [10, 8, 24, 14], [2, 8, 14, 13], [18, 11, 21, 15]],
+      blocked: [[18, 11, 20, 12], [32, 9, 34, 10]],
+      npcs: [
+        { id: "past-miro", sprite: "miro", cell: [25, 6], direction: "right", memory: true },
+        { id: "young-ryan", sprite: "youngRyan", cell: [27, 6], direction: "left", memory: true },
+      ],
       hotspots: [
         {
           id: "blue-flower",
-          cell: [12, 14],
+          cell: [9, 11],
           label: "调查蓝色花朵",
           lines: [
             line("弥洛", "北境星瓣花。花期只有三天。"),
@@ -224,7 +249,7 @@
         },
         {
           id: "ryan-view",
-          cell: [17, 9],
+          cell: [26, 6],
           label: "站在莱恩的位置",
           condition: () => state.flags.has("flowerKnown"),
           lockedLines: [line("弥洛", "这条路很长。先看看他究竟想让我看什么。")],
@@ -246,14 +271,20 @@
       image: "festival",
       chapter: "第三章 · 他讨厌的节日",
       objective: "寻找广场角落被灯火避开的地方",
-      start: [33, 18],
-      bounds: [4, 35, 5, 19],
+      start: [20, 21],
+      bounds: [2, 37, 2, 21],
+      playerSprite: "miro",
+      walkable: [[5, 8, 35, 17], [18, 16, 22, 21], [8, 16, 11, 21], [28, 16, 31, 21], [29, 3, 34, 9], [15, 5, 26, 10]],
+      blocked: [[17, 10, 23, 14], [7, 9, 12, 12], [27, 10, 31, 13]],
+      npcs: [
+        { id: "past-miro", sprite: "miro", cell: [19, 9], direction: "right", memory: true },
+        { id: "young-ryan", sprite: "youngRyan", cell: [21, 9], direction: "left", memory: true },
+      ],
       snow: true,
-      avatar: "miro",
       hotspots: [
         {
           id: "memorial",
-          cell: [31, 6],
+          cell: [32, 4],
           label: "查看纪念碑",
           lines: [
             line("弥洛", "灯火节事故遇难者名录。"),
@@ -267,7 +298,7 @@
         },
         {
           id: "lantern",
-          cell: [19, 12],
+          cell: [20, 9],
           label: "触碰修好的飞灯",
           condition: () => state.flags.has("memorialKnown"),
           lockedLines: [line("弥洛", "我记得这盏灯，却不记得广场角落的那块碑。")],
@@ -289,14 +320,20 @@
       image: "campfire",
       chapter: "第四章 · 没有说出口的告白",
       objective: "调查莱恩藏在营火旁的东西",
-      start: [20, 18],
-      bounds: [5, 34, 7, 19],
+      start: [19, 21],
+      bounds: [4, 36, 3, 21],
+      playerSprite: "miro",
+      walkable: [[12, 5, 34, 14], [17, 14, 21, 21], [25, 4, 34, 10]],
+      blocked: [[17, 8, 22, 12], [13, 6, 16, 9], [25, 10, 28, 12], [27, 5, 30, 6]],
+      npcs: [
+        { id: "past-miro", sprite: "miro", cell: [28, 8], direction: "right", memory: true },
+        { id: "young-ryan", sprite: "youngRyan", cell: [30, 8], direction: "left", memory: true },
+      ],
       snow: true,
-      avatar: "miro",
       hotspots: [
         {
           id: "ring",
-          cell: [25, 12],
+          cell: [24, 12],
           label: "拾起变形的金属环",
           lines: [
             line("弥洛", "银、黄铜和一小片记忆结晶。原本应该是一枚戒指。"),
@@ -309,7 +346,7 @@
         },
         {
           id: "confession",
-          cell: [24, 10],
+          cell: [29, 8],
           label: "靠近莱恩",
           condition: () => state.flags.has("ringKnown"),
           lockedLines: [line("弥洛", "营火旁有什么东西在反光。")],
@@ -331,13 +368,16 @@
       image: "workshop",
       chapter: "第五章 · 被留下的三十年",
       objective: "这一次，你将沿着莱恩的时间行走",
-      start: [20, 18],
-      bounds: [4, 35, 5, 19],
-      avatar: "ryan",
+      start: [20, 20],
+      bounds: [3, 36, 2, 21],
+      playerSprite: "oldRyan",
+      walkable: [[5, 7, 35, 15], [18, 15, 22, 21]],
+      blocked: [[17, 10, 24, 13], [6, 7, 15, 8], [27, 7, 34, 9], [31, 13, 35, 15]],
+      npcs: [],
       hotspots: [
         {
           id: "cups",
-          cell: [23, 11],
+          cell: [24, 11],
           label: "查看两边的杯子",
           lines: [
             line("旁白", "年轻时，桌上有两只杯子。后来，只有一只被使用。"),
@@ -358,7 +398,7 @@
         },
         {
           id: "watch-record",
-          cell: [16, 11],
+          cell: [16, 9],
           label: "阅读怀表维修记录",
           lines: [
             line("维修记录", "白栎历一四七年：更换发条。她没有回来。"),
@@ -375,13 +415,18 @@
       image: "deathbed",
       chapter: "第六章 · 被封印的最后一次见面",
       objective: "走到床边，面对被自己藏起来的记忆",
-      start: [18, 18],
-      bounds: [5, 35, 5, 19],
-      avatar: "miro",
+      start: [20, 20],
+      bounds: [6, 33, 3, 21],
+      playerSprite: "miro",
+      walkable: [[8, 7, 31, 14], [18, 14, 22, 21]],
+      blocked: [[9, 10, 14, 13], [26, 6, 31, 11], [10, 7, 15, 9]],
+      npcs: [
+        { id: "old-ryan", sprite: "oldRyan", cell: [25, 10], direction: "left", memory: true },
+      ],
       hotspots: [
         {
           id: "green-coat",
-          cell: [17, 7],
+          cell: [23, 5],
           label: "触碰绿色旧外套",
           optional: true,
           lines: [
@@ -391,7 +436,7 @@
         },
         {
           id: "last-meeting",
-          cell: [31, 10],
+          cell: [25, 10],
           label: "握住莱恩的手",
           lines: [
             line("老年莱恩", "你见过年轻时的我吗？"),
@@ -412,17 +457,23 @@
     },
     {
       id: "final",
-      image: "final",
+      image: "station",
       chapter: "终章 · 雪融化以后",
       objective: "把迟到了三十年的回答告诉莱恩",
-      start: [18, 18],
-      bounds: [4, 32, 5, 19],
+      start: [13, 12],
+      bounds: [2, 36, 3, 21],
+      playerSprite: "miro",
+      walkable: [[3, 10, 28, 13], [22, 13, 28, 21], [29, 12, 35, 21], [20, 4, 28, 13], [3, 4, 18, 10], [10, 9, 13, 12]],
+      blocked: [[4, 10, 9, 11], [15, 10, 18, 11], [21, 5, 23, 8], [25, 10, 27, 11]],
+      npcs: [
+        { id: "noa", sprite: "noa", cell: [10, 12], direction: "right" },
+        { id: "ryan-memory", sprite: "youngRyan", cell: [23, 12], direction: "left", memory: true, apparition: true },
+      ],
       snow: true,
-      avatar: "miro",
       hotspots: [
         {
           id: "last-umbrella",
-          cell: [22, 9],
+          cell: [16, 14],
           label: "再次查看旧雨伞",
           optional: true,
           lines: [
@@ -432,7 +483,7 @@
         },
         {
           id: "last-flower",
-          cell: [32, 12],
+          cell: [31, 14],
           label: "查看反季节的蓝花",
           optional: true,
           lines: [
@@ -441,7 +492,7 @@
         },
         {
           id: "answer",
-          cell: [20, 13],
+          cell: [23, 12],
           label: "回应莱恩",
           lines: [
             line("弥洛", "莱恩，我现在明白了。"),
@@ -512,6 +563,7 @@
     state.journalOpen = false;
     state.transitioning = false;
     state.toast = null;
+    state.bump = null;
     state.playing = true;
     dialogue.classList.add("is-hidden");
     journal.classList.add("is-hidden");
@@ -756,11 +808,13 @@
   function attemptMove(dx, dy) {
     if (!state.playing || state.dialogueOpen || state.journalOpen || state.transitioning || player.moving) return;
     const scene = scenes[state.sceneIndex];
-    const [minX, maxX, minY, maxY] = scene.bounds;
-    const nextX = Math.max(minX, Math.min(maxX, player.gx + dx));
-    const nextY = Math.max(minY, Math.min(maxY, player.gy + dy));
-    if (nextX === player.gx && nextY === player.gy) return;
     player.direction = dx < 0 ? "left" : dx > 0 ? "right" : dy < 0 ? "up" : "down";
+    const nextX = player.gx + dx;
+    const nextY = player.gy + dy;
+    if (!isWalkable(scene, nextX, nextY)) {
+      state.bump = { start: performance.now(), dx, dy };
+      return;
+    }
     player.fromX = player.x;
     player.fromY = player.y;
     player.gx = nextX;
@@ -770,6 +824,50 @@
     player.moveStart = performance.now();
     player.moving = true;
     player.step += 1;
+  }
+
+  function rectContains(rect, gx, gy) {
+    return gx >= rect[0] && gx <= rect[2] && gy >= rect[1] && gy <= rect[3];
+  }
+
+  function isWalkable(scene, gx, gy) {
+    if (gx < 0 || gx >= WIDTH / GRID || gy < 0 || gy >= Math.ceil(HEIGHT / GRID)) return false;
+    const insideFloor = (scene.walkable || [scene.bounds]).some((rect) => rectContains(rect, gx, gy));
+    if (!insideFloor) return false;
+    if ((scene.blocked || []).some((rect) => rectContains(rect, gx, gy))) return false;
+    if ((scene.npcs || []).some((npc) => npc.cell[0] === gx && npc.cell[1] === gy)) return false;
+    return true;
+  }
+
+  function validateNavigation() {
+    const issues = [];
+    scenes.forEach((scene) => {
+      if (!isWalkable(scene, scene.start[0], scene.start[1])) {
+        issues.push(`${scene.id}:出生点不可通行`);
+        return;
+      }
+      const queue = [scene.start];
+      const visited = new Set([scene.start.join(",")]);
+      for (let index = 0; index < queue.length; index += 1) {
+        const [gx, gy] = queue[index];
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+          const nx = gx + dx;
+          const ny = gy + dy;
+          const key = `${nx},${ny}`;
+          if (!visited.has(key) && isWalkable(scene, nx, ny)) {
+            visited.add(key);
+            queue.push([nx, ny]);
+          }
+        });
+      }
+      scene.hotspots.forEach((hotspot) => {
+        const reachable = queue.some(([gx, gy]) => (
+          Math.abs(gx - hotspot.cell[0]) + Math.abs(gy - hotspot.cell[1]) <= 2
+        ));
+        if (!reachable) issues.push(`${scene.id}:${hotspot.id}无法抵达`);
+      });
+    });
+    return issues;
   }
 
   function updatePlayer(time) {
@@ -801,35 +899,35 @@
   }
 
   function drawGrid(scene) {
-    const [minX, maxX, minY, maxY] = scene.bounds;
-    const left = minX * GRID;
-    const top = minY * GRID;
-    const right = (maxX + 1) * GRID;
-    const bottom = (maxY + 1) * GRID;
     ctx.save();
-    ctx.beginPath();
-    ctx.rect(left, top, right - left, bottom - top);
-    ctx.clip();
     ctx.lineWidth = 1;
     ctx.strokeStyle = scene.id === "flowers"
-      ? "rgba(115, 213, 209, 0.12)"
-      : "rgba(224, 232, 238, 0.105)";
-    ctx.beginPath();
-    for (let x = left; x <= right; x += GRID) {
-      ctx.moveTo(Math.round(x) + 0.5, top);
-      ctx.lineTo(Math.round(x) + 0.5, bottom);
-    }
-    for (let y = top; y <= bottom; y += GRID) {
-      ctx.moveTo(left, Math.round(y) + 0.5);
-      ctx.lineTo(right, Math.round(y) + 0.5);
-    }
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(230, 215, 173, 0.16)";
-    for (let gx = minX; gx <= maxX; gx += 4) {
-      for (let gy = minY; gy <= maxY; gy += 4) {
-        ctx.fillRect(gx * GRID, gy * GRID, 2, 2);
+      ? "rgba(115, 213, 209, 0.09)"
+      : "rgba(224, 232, 238, 0.075)";
+    for (const [minX, minY, maxX, maxY] of scene.walkable || [scene.bounds]) {
+      const left = minX * GRID;
+      const top = minY * GRID;
+      const right = (maxX + 1) * GRID;
+      const bottom = (maxY + 1) * GRID;
+      ctx.beginPath();
+      ctx.rect(left, top, right - left, bottom - top);
+      ctx.clip();
+      ctx.beginPath();
+      for (let x = left; x <= right; x += GRID) {
+        ctx.moveTo(Math.round(x) + 0.5, top);
+        ctx.lineTo(Math.round(x) + 0.5, bottom);
       }
+      for (let y = top; y <= bottom; y += GRID) {
+        ctx.moveTo(left, Math.round(y) + 0.5);
+        ctx.lineTo(right, Math.round(y) + 0.5, bottom);
+      }
+      ctx.stroke();
+      ctx.restore();
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = scene.id === "flowers"
+        ? "rgba(115, 213, 209, 0.09)"
+        : "rgba(224, 232, 238, 0.075)";
     }
     ctx.restore();
   }
@@ -854,72 +952,93 @@
     }
   }
 
-  function drawMiro(x, y, time) {
-    const bob = player.moving ? Math.round(Math.sin((time - player.moveStart) / 18) * 1.4) : 0;
-    const flip = player.direction === "left" ? -1 : 1;
-    ctx.save();
-    ctx.translate(Math.round(x), Math.round(y + bob));
-    ctx.scale(flip, 1);
-    ctx.shadowColor = "rgba(115, 213, 209, 0.9)";
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = "rgba(8, 13, 22, 0.48)";
-    ctx.beginPath();
-    ctx.ellipse(0, 15, 11, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
+  function spriteColumn(direction, moving, time, phase = 0) {
+    if (!moving) return { column: { down: 0, up: 1, left: 2, right: 3 }[direction] ?? 0, flip: false };
+    if (direction === "up") return { column: 1, flip: false };
+    if (direction === "down") {
+      const frames = [4, 5, 6, 5];
+      return { column: frames[Math.floor((time + phase) / 95) % frames.length], flip: false };
+    }
+    const frames = [7, 8, 9, 8];
+    return {
+      column: frames[Math.floor((time + phase) / 95) % frames.length],
+      flip: direction === "left",
+    };
+  }
 
-    ctx.fillStyle = "#d9e1e7";
-    ctx.fillRect(-6, -10, 12, 13);
-    ctx.fillRect(-8, -6, 4, 15);
-    ctx.fillRect(5, -5, 4, 14);
-    ctx.fillStyle = "#e9d7bb";
-    ctx.fillRect(-4, -9, 8, 7);
-    ctx.fillStyle = "#1b2942";
-    ctx.fillRect(-7, 0, 14, 12);
-    ctx.fillRect(-9, 7, 18, 7);
-    ctx.fillStyle = "#d8cfb9";
-    ctx.fillRect(-5, 1, 10, 3);
-    ctx.fillRect(-4, 11, 8, 4);
-    ctx.fillStyle = "#402f28";
-    ctx.fillRect(-7, 14, 5, 3);
-    ctx.fillRect(2, 14, 5, 3);
-    ctx.fillStyle = "#17233a";
-    ctx.fillRect(-11, -15, 22, 4);
-    ctx.fillRect(-6, -20, 13, 5);
-    ctx.fillRect(-3, -24, 8, 5);
-    ctx.fillStyle = "#bd9753";
-    ctx.fillRect(5, 3, 4, 6);
+  function drawCharacter(actor, time) {
+    const sheet = images.sprites;
+    if (!sheet) return;
+    const row = spriteRows[actor.sprite] ?? 0;
+    const direction = actor.direction || "down";
+    const frameData = spriteColumn(direction, actor.moving, time, actor.phase || 0);
+    const sw = sheet.naturalWidth / 10;
+    const sh = sheet.naturalHeight / 4;
+    const dw = 82;
+    const dh = 108;
+    const idleBob = actor.moving ? 0 : Math.round(Math.sin((time + (actor.phase || 0)) / 720) * 0.7);
+    const moveBob = actor.moving ? Math.round(Math.sin((time - player.moveStart) / 22) * 1.5) : 0;
+    let bumpX = 0;
+    let bumpY = 0;
+    if (actor.isPlayer && state.bump) {
+      const age = time - state.bump.start;
+      if (age < 145) {
+        const amount = Math.sin((age / 145) * Math.PI) * 4;
+        bumpX = state.bump.dx * amount;
+        bumpY = state.bump.dy * amount;
+      } else {
+        state.bump = null;
+      }
+    }
+    const alpha = actor.apparition ? 0.66 + Math.sin(time / 380) * 0.08 : actor.memory ? 0.9 : 1;
+    ctx.save();
+    ctx.translate(Math.round(actor.x + bumpX), Math.round(actor.y + bumpY + idleBob + moveBob));
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = actor.apparition ? "rgba(149, 224, 232, 0.28)" : "rgba(7, 12, 22, 0.48)";
+    ctx.beginPath();
+    ctx.ellipse(0, 11, actor.apparition ? 16 : 13, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (actor.apparition) {
+      ctx.shadowColor = "rgba(137, 224, 232, 0.9)";
+      ctx.shadowBlur = 14;
+    }
+    if (frameData.flip) ctx.scale(-1, 1);
+    ctx.drawImage(
+      sheet,
+      frameData.column * sw,
+      row * sh,
+      sw,
+      sh,
+      -dw / 2,
+      -dh + 15,
+      dw,
+      dh,
+    );
     ctx.restore();
   }
 
-  function drawRyan(x, y, time) {
-    const bob = player.moving ? Math.round(Math.sin((time - player.moveStart) / 18) * 1.4) : 0;
-    const flip = player.direction === "left" ? -1 : 1;
-    ctx.save();
-    ctx.translate(Math.round(x), Math.round(y + bob));
-    ctx.scale(flip, 1);
-    ctx.shadowColor = "rgba(240, 201, 120, 0.78)";
-    ctx.shadowBlur = 8;
-    ctx.fillStyle = "rgba(8, 13, 22, 0.48)";
-    ctx.beginPath();
-    ctx.ellipse(0, 15, 10, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = "#3d2d28";
-    ctx.fillRect(-6, -15, 12, 6);
-    ctx.fillRect(-8, -12, 4, 6);
-    ctx.fillStyle = "#e3c4a3";
-    ctx.fillRect(-5, -10, 10, 8);
-    ctx.fillStyle = "#a88457";
-    ctx.fillRect(-7, -2, 14, 4);
-    ctx.fillStyle = "#33483c";
-    ctx.fillRect(-8, 2, 16, 12);
-    ctx.fillStyle = "#252b2b";
-    ctx.fillRect(-6, 13, 5, 4);
-    ctx.fillRect(2, 13, 5, 4);
-    ctx.fillStyle = "#674b32";
-    ctx.fillRect(6, 4, 4, 7);
-    ctx.restore();
+  function drawActors(scene, time) {
+    const actors = (scene.npcs || []).map((npc, index) => ({
+      ...npc,
+      x: npc.cell[0] * GRID + GRID / 2,
+      y: npc.cell[1] * GRID + GRID / 2,
+      moving: false,
+      phase: index * 430,
+      isPlayer: false,
+    }));
+    if (state.started && state.playing) {
+      actors.push({
+        sprite: scene.playerSprite || "miro",
+        x: player.x,
+        y: player.y,
+        direction: player.direction,
+        moving: player.moving,
+        phase: 0,
+        isPlayer: true,
+      });
+    }
+    actors.sort((a, b) => a.y - b.y);
+    actors.forEach((actor) => drawCharacter(actor, time));
   }
 
   function drawWeather(scene, dt) {
@@ -996,10 +1115,7 @@
     drawBackground(scene);
     drawGrid(scene);
     drawHotspots(scene, time);
-    if (state.started && state.playing) {
-      if (scene.avatar === "ryan") drawRyan(player.x, player.y, time);
-      else drawMiro(player.x, player.y, time);
-    }
+    drawActors(scene, time);
     drawWeather(scene, dt);
     drawToast(time);
 
@@ -1114,7 +1230,19 @@
   });
 
   preloadImages().then(() => {
-    if (query.get("qa") === "autostart") startGame();
+    if (query.get("qa") === "autostart") {
+      startGame();
+      const qaScene = Number(query.get("scene"));
+      if (Number.isInteger(qaScene) && qaScene >= 0 && qaScene < scenes.length) {
+        window.clearInterval(state.typeTimer);
+        state.dialogueOpen = false;
+        state.dialogueDone = null;
+        dialogue.classList.add("is-hidden");
+        frame.classList.remove("dialogue-open");
+        loadScene(qaScene);
+      }
+      document.documentElement.dataset.navigationQa = JSON.stringify(validateNavigation());
+    }
   });
   renderJournal();
   requestAnimationFrame(render);

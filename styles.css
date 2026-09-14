@@ -291,7 +291,7 @@ kbd {
   inset: 0;
   z-index: -1;
   content: "";
-  background: url("assets/final-platform.png") center / cover no-repeat;
+  background: url("assets/map-v2-station.png") center / cover no-repeat;
   filter: saturate(0.68) brightness(0.55);
 }
 
